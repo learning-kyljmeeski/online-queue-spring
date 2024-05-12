@@ -27,8 +27,8 @@ public class QueueServiceImpl implements QueueService {
 
     @Override
     public void addPersonToQueue(String name, long id) {
+        Queue queue = queueRepository.findQueueByIdIfNoPersonWithSameName(id, name).orElseThrow();
         Person person = new Person(name);
-        Queue queue = queueRepository.findById(id).orElseThrow();
         person.joinQueue(queue);
         personRepository.save(person);
     }
