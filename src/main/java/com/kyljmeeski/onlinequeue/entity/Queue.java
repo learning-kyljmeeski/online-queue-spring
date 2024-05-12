@@ -12,9 +12,12 @@ public class Queue {
     @Id
     @GeneratedValue
     private Long id;
+    @Column(nullable = false)
     private String name;
     private String description;
-    private int duration;
+//    todo: columnDefinition doesn't working, find out why
+    @Column(nullable = false, columnDefinition = "int default 10")
+    private Integer duration;
     @OneToMany(mappedBy = "queue", cascade = CascadeType.ALL)
     private List<Person> people;
 
