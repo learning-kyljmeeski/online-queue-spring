@@ -2,10 +2,12 @@ package com.kyljmeeski.onlinequeue.service.impl;
 
 import com.kyljmeeski.onlinequeue.entity.Person;
 import com.kyljmeeski.onlinequeue.entity.Queue;
+import com.kyljmeeski.onlinequeue.exception.EmptyQueueException;
 import com.kyljmeeski.onlinequeue.model.NewQueue;
 import com.kyljmeeski.onlinequeue.repository.PersonRepository;
 import com.kyljmeeski.onlinequeue.repository.QueueRepository;
 import com.kyljmeeski.onlinequeue.service.QueueService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,7 +29,9 @@ public class QueueServiceImpl implements QueueService {
 
     @Override
     public void addPersonToQueue(String name, long id) {
-        Queue queue = queueRepository.findQueueByIdIfNoPersonWithSameName(id, name).orElseThrow();
+        Queue queue = queueRepository.findQueueByIdIfNoPersonWithSameName(id, name).orElseThrow(
+                () -> new EntityNotFoundException("Queue not found or person with such name is already on queue")
+        );
         Person person = new Person(name);
         person.joinQueue(queue);
         personRepository.save(person);
@@ -35,12 +39,18 @@ public class QueueServiceImpl implements QueueService {
 
     @Override
     public List<String> getPeopleOnQueue(long id) {
-        return queueRepository.findById(id).orElseThrow().people();
+        return queueRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Queue not found")).people();
     }
 
     @Override
     public void callNextPersonOnQueue(long id) {
-        Person person = queueRepository.findById(id).orElseThrow().callNext();
-        personRepository.delete(person);
+        try {
+            Person person = queueRepository.findById(id).orElseThrow(
+                    () -> new EntityNotFoundException("Queue not found")
+            ).callNext();
+            personRepository.delete(person);
+        } catch (IndexOutOfBoundsException exception) {
+            throw new EmptyQueueException("There is no one to call next");
+        }
     }
 }
