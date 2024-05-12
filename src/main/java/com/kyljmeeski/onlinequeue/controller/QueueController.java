@@ -1,6 +1,7 @@
 package com.kyljmeeski.onlinequeue.controller;
 
 import com.kyljmeeski.onlinequeue.model.NewQueue;
+import com.kyljmeeski.onlinequeue.model.PersonOnQueue;
 import com.kyljmeeski.onlinequeue.service.QueueService;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,8 +22,8 @@ public class QueueController {
     }
 
     @PutMapping("/{id}")
-    public void addPersonToQueue(@PathVariable long id, @RequestParam String name) {
-        service.addPersonToQueue(name, id);
+    public PersonOnQueue addPersonToQueue(@PathVariable long id, @RequestParam String name) {
+        return service.addPersonToQueue(name, id);
     }
 
     @GetMapping("/{id}")

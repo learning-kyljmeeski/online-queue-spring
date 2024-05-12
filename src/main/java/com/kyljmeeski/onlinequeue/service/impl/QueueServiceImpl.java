@@ -4,6 +4,7 @@ import com.kyljmeeski.onlinequeue.entity.Person;
 import com.kyljmeeski.onlinequeue.entity.Queue;
 import com.kyljmeeski.onlinequeue.exception.EmptyQueueException;
 import com.kyljmeeski.onlinequeue.model.NewQueue;
+import com.kyljmeeski.onlinequeue.model.PersonOnQueue;
 import com.kyljmeeski.onlinequeue.repository.PersonRepository;
 import com.kyljmeeski.onlinequeue.repository.QueueRepository;
 import com.kyljmeeski.onlinequeue.service.QueueService;
@@ -28,13 +29,14 @@ public class QueueServiceImpl implements QueueService {
     }
 
     @Override
-    public void addPersonToQueue(String name, long id) {
+    public PersonOnQueue addPersonToQueue(String name, long id) {
         Queue queue = queueRepository.findQueueByIdIfNoPersonWithSameName(id, name).orElseThrow(
                 () -> new EntityNotFoundException("Queue not found or person with such name is already on queue")
         );
         Person person = new Person(name);
         person.joinQueue(queue);
         personRepository.save(person);
+        return new PersonOnQueue(queue.id(), person.name());
     }
 
     @Override
