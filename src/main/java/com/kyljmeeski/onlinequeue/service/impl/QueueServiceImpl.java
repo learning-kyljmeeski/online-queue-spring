@@ -65,7 +65,7 @@ public class QueueServiceImpl implements QueueService {
             ).callNext();
             personRepository.delete(person);
         } catch (IndexOutOfBoundsException exception) {
-            throw new EmptyQueueException("There is no one to call next");
+            throw new EmptyQueueException();
         }
     }
 }

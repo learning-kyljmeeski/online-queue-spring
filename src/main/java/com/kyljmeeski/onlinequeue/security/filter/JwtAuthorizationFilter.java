@@ -23,11 +23,10 @@ import java.util.Map;
 @Component
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
-    private final ObjectMapper mapper;
+    private final ObjectMapper mapper = new ObjectMapper();
 
-    public JwtAuthorizationFilter(JwtUtil jwtUtil, ObjectMapper mapper) {
+    public JwtAuthorizationFilter(JwtUtil jwtUtil) {
         this.jwtUtil = jwtUtil;
-        this.mapper = mapper;
     }
 
     @Override
@@ -40,12 +39,10 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 filterChain.doFilter(request, response);
                 return;
             }
-            System.out.println("token : " + accessToken);
             Claims claims = jwtUtil.resolveClaims(request);
 
             if (claims != null & jwtUtil.validateClaims(claims)) {
                 String email = claims.getSubject();
-                System.out.println("username : " + email);
                 Authentication authentication =
                         new UsernamePasswordAuthenticationToken(email, "", new ArrayList<>());
                 SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -54,11 +51,11 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         } catch (Exception e) {
             errorDetails.put("message", "Authentication Error");
             errorDetails.put("details", e.getMessage());
+            errorDetails.put("exception", e.toString());
             response.setStatus(HttpStatus.FORBIDDEN.value());
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 
             mapper.writeValue(response.getWriter(), errorDetails);
-
         }
         filterChain.doFilter(request, response);
     }

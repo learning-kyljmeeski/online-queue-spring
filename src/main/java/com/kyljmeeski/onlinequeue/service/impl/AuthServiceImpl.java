@@ -8,10 +8,12 @@ import com.kyljmeeski.onlinequeue.model.response.LoginResponse;
 import com.kyljmeeski.onlinequeue.repository.UserRepository;
 import com.kyljmeeski.onlinequeue.security.JwtUtil;
 import com.kyljmeeski.onlinequeue.service.AuthService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -50,7 +52,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public ResponseEntity<?> signup(SignupRequest signupRequest) {
         if (userRepository.findByUsername(signupRequest.username()).isPresent()) {
-            throw new UsernameIsTakenException("Username " + signupRequest.username() + " is taken");
+            throw new UsernameIsTakenException(signupRequest.username());
         }
         User user = userRepository.save(
                 new User(

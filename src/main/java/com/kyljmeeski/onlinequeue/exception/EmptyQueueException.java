@@ -1,7 +1,7 @@
 package com.kyljmeeski.onlinequeue.exception;
 
 public class EmptyQueueException extends RuntimeException {
-    public EmptyQueueException(String message) {
-        super(message);
+    public EmptyQueueException() {
+        super("There is no one to call next");
     }
 }
