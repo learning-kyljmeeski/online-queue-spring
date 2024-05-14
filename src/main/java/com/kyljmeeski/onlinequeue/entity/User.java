@@ -74,6 +74,10 @@ public class User implements UserDetails {
         return true;
     }
 
+    public Long getId() {
+        return id;
+    }
+
     public String getName() {
         return name;
     }
