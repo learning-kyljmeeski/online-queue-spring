@@ -3,8 +3,8 @@ package com.kyljmeeski.onlinequeue.service.impl;
 import com.kyljmeeski.onlinequeue.entity.Person;
 import com.kyljmeeski.onlinequeue.entity.Queue;
 import com.kyljmeeski.onlinequeue.exception.EmptyQueueException;
-import com.kyljmeeski.onlinequeue.model.NewQueue;
-import com.kyljmeeski.onlinequeue.model.PersonOnQueue;
+import com.kyljmeeski.onlinequeue.model.request.CreateQueueRequest;
+import com.kyljmeeski.onlinequeue.model.response.AddPersonToQueueResponse;
 import com.kyljmeeski.onlinequeue.repository.PersonRepository;
 import com.kyljmeeski.onlinequeue.repository.QueueRepository;
 import com.kyljmeeski.onlinequeue.service.QueueService;
@@ -24,19 +24,19 @@ public class QueueServiceImpl implements QueueService {
     }
 
     @Override
-    public long createQueue(NewQueue newQueue) {
-        return queueRepository.save(new Queue(newQueue)).id();
+    public long createQueue(CreateQueueRequest createQueueRequest) {
+        return queueRepository.save(new Queue(createQueueRequest)).id();
     }
 
     @Override
-    public PersonOnQueue addPersonToQueue(String name, long id) {
+    public AddPersonToQueueResponse addPersonToQueue(String name, long id) {
         Queue queue = queueRepository.findQueueByIdIfNoPersonWithSameName(id, name).orElseThrow(
                 () -> new EntityNotFoundException("Queue not found or person with such name is already on queue")
         );
         Person person = new Person(name);
         person.joinQueue(queue);
         personRepository.save(person);
-        return new PersonOnQueue(queue.id(), person.name());
+        return new AddPersonToQueueResponse(queue.id(), person.name());
     }
 
     @Override

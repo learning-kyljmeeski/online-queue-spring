@@ -1,7 +1,7 @@
 package com.kyljmeeski.onlinequeue.controller;
 
-import com.kyljmeeski.onlinequeue.model.NewQueue;
-import com.kyljmeeski.onlinequeue.model.PersonOnQueue;
+import com.kyljmeeski.onlinequeue.model.request.CreateQueueRequest;
+import com.kyljmeeski.onlinequeue.model.response.AddPersonToQueueResponse;
 import com.kyljmeeski.onlinequeue.service.QueueService;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,12 +17,12 @@ public class QueueController {
     }
 
     @PostMapping
-    public long createQueue(@RequestBody NewQueue newQueue) {
-        return service.createQueue(newQueue);
+    public long createQueue(@RequestBody CreateQueueRequest createQueueRequest) {
+        return service.createQueue(createQueueRequest);
     }
 
     @PutMapping("/{id}")
-    public PersonOnQueue addPersonToQueue(@PathVariable long id, @RequestParam String name) {
+    public AddPersonToQueueResponse addPersonToQueue(@PathVariable long id, @RequestParam String name) {
         return service.addPersonToQueue(name, id);
     }
 

@@ -1,6 +1,6 @@
 package com.kyljmeeski.onlinequeue.entity;
 
-import com.kyljmeeski.onlinequeue.model.NewQueue;
+import com.kyljmeeski.onlinequeue.model.request.CreateQueueRequest;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -31,8 +31,8 @@ public class Queue {
         this.duration = duration;
     }
 
-    public Queue(NewQueue newQueue) {
-        this(newQueue.name(), newQueue.description(), newQueue.duration());
+    public Queue(CreateQueueRequest createQueueRequest) {
+        this(createQueueRequest.name(), createQueueRequest.description(), createQueueRequest.duration());
     }
 
     public long id() {

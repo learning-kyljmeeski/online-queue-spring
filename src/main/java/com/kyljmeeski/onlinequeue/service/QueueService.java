@@ -1,14 +1,14 @@
 package com.kyljmeeski.onlinequeue.service;
 
-import com.kyljmeeski.onlinequeue.model.NewQueue;
-import com.kyljmeeski.onlinequeue.model.PersonOnQueue;
+import com.kyljmeeski.onlinequeue.model.request.CreateQueueRequest;
+import com.kyljmeeski.onlinequeue.model.response.AddPersonToQueueResponse;
 
 import java.util.List;
 
 public interface QueueService {
-    long createQueue(NewQueue newQueue);
+    long createQueue(CreateQueueRequest createQueueRequest);
 
-    PersonOnQueue addPersonToQueue(String name, long id);
+    AddPersonToQueueResponse addPersonToQueue(String name, long id);
 
     List<String> getPeopleOnQueue(long id);
 
