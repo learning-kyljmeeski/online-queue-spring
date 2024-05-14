@@ -37,7 +37,6 @@ public class JwtUtil {
                                 issuedAt.toInstant().plusSeconds(VALIDITY_IN_SECONDS)
                         )
                 )
-                .claim("user_id", user.getId())
                 .signWith(SignatureAlgorithm.HS256, SECRET)
                 .compact();
     }
