@@ -14,14 +14,18 @@ import java.util.List;
 @Component
 public class JwtUtil {
     private final JwtParser jwtParser;
-//    @Value("${jwt.secret}")
-    private String SECRET = "my_secret_key";
-//    @Value("${jwt.validity_in_seconds}")
-    private long VALIDITY_IN_SECONDS = 60 * 60;
+//    @Value("${jwt.secretKey}")
+    private String SECRET;
+    private long VALIDITY_IN_SECONDS;
     private final String TOKEN_HEADER = "Authorization";
     private final String TOKEN_PREFIX = "Bearer ";
 
-    public JwtUtil(){
+    public JwtUtil(
+            @Value("${jwt.validityInSeconds}") String secret,
+            @Value("${jwt.validityInSeconds}") long validityInSeconds
+    ){
+        SECRET = secret;
+        VALIDITY_IN_SECONDS = validityInSeconds;
         this.jwtParser = Jwts.parser().setSigningKey(SECRET);
     }
 
