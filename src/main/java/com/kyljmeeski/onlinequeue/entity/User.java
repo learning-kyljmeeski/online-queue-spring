@@ -1,12 +1,16 @@
 package com.kyljmeeski.onlinequeue.entity;
 
+import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 
+@Entity
+@Table(name = "users")
 public class User implements UserDetails {
     @Id
     @GeneratedValue
@@ -48,5 +52,9 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public String getName() {
+        return name;
     }
 }
