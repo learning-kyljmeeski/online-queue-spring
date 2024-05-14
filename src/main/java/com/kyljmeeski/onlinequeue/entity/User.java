@@ -1,13 +1,12 @@
 package com.kyljmeeski.onlinequeue.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -18,6 +17,8 @@ public class User implements UserDetails {
     private String username;
     private String password;
     private String name;
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
+    private Set<Queue> queues;
 
     protected User() {
 

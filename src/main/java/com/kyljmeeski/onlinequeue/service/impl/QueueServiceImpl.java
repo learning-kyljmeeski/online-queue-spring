@@ -2,13 +2,16 @@ package com.kyljmeeski.onlinequeue.service.impl;
 
 import com.kyljmeeski.onlinequeue.entity.Person;
 import com.kyljmeeski.onlinequeue.entity.Queue;
+import com.kyljmeeski.onlinequeue.entity.User;
 import com.kyljmeeski.onlinequeue.exception.EmptyQueueException;
 import com.kyljmeeski.onlinequeue.model.request.CreateQueueRequest;
 import com.kyljmeeski.onlinequeue.model.response.AddPersonToQueueResponse;
 import com.kyljmeeski.onlinequeue.repository.PersonRepository;
 import com.kyljmeeski.onlinequeue.repository.QueueRepository;
+import com.kyljmeeski.onlinequeue.repository.UserRepository;
 import com.kyljmeeski.onlinequeue.service.QueueService;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,15 +20,25 @@ import java.util.List;
 public class QueueServiceImpl implements QueueService {
     private final PersonRepository personRepository;
     private final QueueRepository queueRepository;
+    private final UserRepository userRepository;
 
-    public QueueServiceImpl(PersonRepository personRepository, QueueRepository queueRepository) {
+    public QueueServiceImpl(
+            PersonRepository personRepository, QueueRepository queueRepository, UserRepository userRepository
+    ) {
         this.personRepository = personRepository;
         this.queueRepository = queueRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
     public long createQueue(CreateQueueRequest createQueueRequest) {
-        return queueRepository.save(new Queue(createQueueRequest)).id();
+        User user = userRepository.findByUsername(
+                SecurityContextHolder.getContext().getAuthentication().getName()
+        ).orElseThrow();
+        Queue queue = queueRepository.save(new Queue(createQueueRequest));
+        queue.selectOwner(user);
+        queueRepository.save(queue);
+        return queue.id();
     }
 
     @Override

@@ -20,6 +20,9 @@ public class Queue {
     private Integer duration;
     @OneToMany(mappedBy = "queue", cascade = CascadeType.ALL)
     private List<Person> people;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User owner;
 
     protected Queue() {
 
@@ -45,5 +48,9 @@ public class Queue {
 
     public Person callNext() {
         return people.remove(0);
+    }
+
+    public void selectOwner(User user) {
+        this.owner = user;
     }
 }
