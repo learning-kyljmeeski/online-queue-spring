@@ -37,6 +37,7 @@ public class JwtUtil {
                                 issuedAt.toInstant().plusSeconds(VALIDITY_IN_SECONDS)
                         )
                 )
+                .claim("user_id", user.getId())
                 .signWith(SignatureAlgorithm.HS256, SECRET)
                 .compact();
     }
@@ -83,5 +84,10 @@ public class JwtUtil {
 
     public List<String> getRoles(Claims claims) {
         return (List<String>) claims.get("roles");
+    }
+
+    public long getUserId(String token) {
+        Claims claims = parseClaims(token);
+        return (long) claims.get("user_id");
     }
 }
