@@ -1,4 +1,4 @@
-package com.kyljmeeski.onlinequeue.controller.advice;
+package com.kyljmeeski.onlinequeue.exception.advice;
 
 import com.kyljmeeski.onlinequeue.exception.EmptyQueueException;
 import jakarta.persistence.EntityNotFoundException;
