@@ -10,7 +10,8 @@ import java.util.stream.Collectors;
 @Table(name = "queues")
 public class Queue {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "queues_id_seq")
+    @SequenceGenerator(name = "queues_id_seq", sequenceName = "queues_id_seq", allocationSize = 1)
     private Long id;
     @Column(nullable = false)
     private String name;
