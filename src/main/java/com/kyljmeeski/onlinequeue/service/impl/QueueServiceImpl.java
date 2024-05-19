@@ -7,16 +7,19 @@ import com.kyljmeeski.onlinequeue.exception.EmptyQueueException;
 import com.kyljmeeski.onlinequeue.model.request.CreateQueueRequest;
 import com.kyljmeeski.onlinequeue.model.response.AddPersonToQueueResponse;
 import com.kyljmeeski.onlinequeue.model.response.QueueResponse;
+import com.kyljmeeski.onlinequeue.model.response.QueuesResponse;
 import com.kyljmeeski.onlinequeue.repository.PersonRepository;
 import com.kyljmeeski.onlinequeue.repository.QueueRepository;
 import com.kyljmeeski.onlinequeue.repository.UserRepository;
 import com.kyljmeeski.onlinequeue.service.QueueService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.security.authentication.AuthenticationServiceException;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class QueueServiceImpl implements QueueService {
@@ -74,5 +77,18 @@ public class QueueServiceImpl implements QueueService {
         } catch (IndexOutOfBoundsException exception) {
             throw new EmptyQueueException();
         }
+    }
+
+    @Override
+    public QueuesResponse getQueues() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = userRepository.findByUsername(authentication.getName()).orElseThrow(
+                () -> new AuthenticationServiceException("authentication required")
+        );
+        return new QueuesResponse(
+                user.queues().stream().map(
+                        queue -> new QueuesResponse.Queue(queue.id(), queue.name())
+                ).collect(Collectors.toList())
+        );
     }
 }

@@ -82,4 +82,8 @@ public class User implements UserDetails {
     public String getName() {
         return name;
     }
+
+    public Set<Queue> queues() {
+        return queues;
+    }
 }
