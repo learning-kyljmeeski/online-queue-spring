@@ -43,6 +43,10 @@ public class Queue {
         return id;
     }
 
+    public String name() {
+        return name;
+    }
+
     public List<String> people() {
         return people.stream().map(Person::name).collect(Collectors.toList());
     }
