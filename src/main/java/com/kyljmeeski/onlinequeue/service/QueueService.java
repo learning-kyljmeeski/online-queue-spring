@@ -2,6 +2,7 @@ package com.kyljmeeski.onlinequeue.service;
 
 import com.kyljmeeski.onlinequeue.model.request.CreateQueueRequest;
 import com.kyljmeeski.onlinequeue.model.response.AddPersonToQueueResponse;
+import com.kyljmeeski.onlinequeue.model.response.QueueResponse;
 
 import java.util.List;
 
@@ -10,7 +11,7 @@ public interface QueueService {
 
     AddPersonToQueueResponse addPersonToQueue(String name, long id);
 
-    List<String> getPeopleOnQueue(long id);
+    QueueResponse getPeopleOnQueue(long id);
 
-    void callNextPersonOnQueue(long id);
+    List<String> callNextPersonOnQueue(long id);
 }

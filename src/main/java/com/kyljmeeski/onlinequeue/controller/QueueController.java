@@ -2,6 +2,7 @@ package com.kyljmeeski.onlinequeue.controller;
 
 import com.kyljmeeski.onlinequeue.model.request.CreateQueueRequest;
 import com.kyljmeeski.onlinequeue.model.response.AddPersonToQueueResponse;
+import com.kyljmeeski.onlinequeue.model.response.QueueResponse;
 import com.kyljmeeski.onlinequeue.service.QueueService;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,12 +28,12 @@ public class QueueController {
     }
 
     @GetMapping("/{id}")
-    public List<String> getPeopleOnQueue(@PathVariable long id) {
+    public QueueResponse getPeopleOnQueue(@PathVariable long id) {
         return service.getPeopleOnQueue(id);
     }
 
     @PutMapping("/{id}/next")
-    public void callNextPersonOnQueue(@PathVariable long id) {
-        service.callNextPersonOnQueue(id);
+    public List<String> callNextPersonOnQueue(@PathVariable long id) {
+        return service.callNextPersonOnQueue(id);
     }
 }

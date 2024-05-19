@@ -6,11 +6,13 @@ import com.kyljmeeski.onlinequeue.entity.User;
 import com.kyljmeeski.onlinequeue.exception.EmptyQueueException;
 import com.kyljmeeski.onlinequeue.model.request.CreateQueueRequest;
 import com.kyljmeeski.onlinequeue.model.response.AddPersonToQueueResponse;
+import com.kyljmeeski.onlinequeue.model.response.QueueResponse;
 import com.kyljmeeski.onlinequeue.repository.PersonRepository;
 import com.kyljmeeski.onlinequeue.repository.QueueRepository;
 import com.kyljmeeski.onlinequeue.repository.UserRepository;
 import com.kyljmeeski.onlinequeue.service.QueueService;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -34,7 +36,7 @@ public class QueueServiceImpl implements QueueService {
     public long createQueue(CreateQueueRequest createQueueRequest) {
         User user = userRepository.findByUsername(
                 SecurityContextHolder.getContext().getAuthentication().getName()
-        ).orElseThrow();
+        ).orElseThrow(() -> new AuthenticationServiceException("User not found."));
         Queue queue = queueRepository.save(new Queue(createQueueRequest));
         queue.selectOwner(user);
         queueRepository.save(queue);
@@ -53,17 +55,22 @@ public class QueueServiceImpl implements QueueService {
     }
 
     @Override
-    public List<String> getPeopleOnQueue(long id) {
-        return queueRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Queue not found")).people();
+    public QueueResponse getPeopleOnQueue(long id) {
+        Queue queue = queueRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("Queue not found")
+        );
+        return new QueueResponse(queue.name(), queue.people());
     }
 
     @Override
-    public void callNextPersonOnQueue(long id) {
+    public List<String> callNextPersonOnQueue(long id) {
         try {
-            Person person = queueRepository.findById(id).orElseThrow(
+            Queue queue = queueRepository.findById(id).orElseThrow(
                     () -> new EntityNotFoundException("Queue not found")
-            ).callNext();
+            );
+            Person person = queue.callNext();
             personRepository.delete(person);
+            return queue.people();
         } catch (IndexOutOfBoundsException exception) {
             throw new EmptyQueueException();
         }
