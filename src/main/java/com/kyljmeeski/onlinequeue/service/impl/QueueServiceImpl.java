@@ -87,7 +87,7 @@ public class QueueServiceImpl implements QueueService {
         );
         return new QueuesResponse(
                 user.queues().stream().map(
-                        queue -> new QueuesResponse.Queue(queue.id(), queue.name())
+                        queue -> new QueuesResponse.Queue(queue.id(), queue.name(), queue.length())
                 ).collect(Collectors.toList())
         );
     }

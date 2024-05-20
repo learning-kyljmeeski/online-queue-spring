@@ -58,4 +58,8 @@ public class Queue {
     public void selectOwner(User user) {
         this.owner = user;
     }
+
+    public long length() {
+        return people.size();
+    }
 }
