@@ -93,4 +93,8 @@ public class JwtUtil {
         Claims claims = parseClaims(token);
         return (long) claims.get("user_id");
     }
+
+    public long tokenValidity() {
+        return VALIDITY_IN_SECONDS;
+    }
 }

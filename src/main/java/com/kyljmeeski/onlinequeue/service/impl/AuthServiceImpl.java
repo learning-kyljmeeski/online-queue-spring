@@ -8,17 +8,13 @@ import com.kyljmeeski.onlinequeue.model.response.LoginResponse;
 import com.kyljmeeski.onlinequeue.repository.UserRepository;
 import com.kyljmeeski.onlinequeue.security.JwtUtil;
 import com.kyljmeeski.onlinequeue.service.AuthService;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.ErrorResponse;
 
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -42,7 +38,7 @@ public class AuthServiceImpl implements AuthService {
             );
             User user = new User(authentication.getName());
             return ResponseEntity.ok(
-                    new LoginResponse(user.getUsername(), jwtUtil.createToken(user))
+                    new LoginResponse(user.getUsername(), jwtUtil.createToken(user), jwtUtil.tokenValidity())
             );
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -62,7 +58,7 @@ public class AuthServiceImpl implements AuthService {
                 )
         );
         return ResponseEntity.status(HttpStatus.CREATED).body(
-                new LoginResponse(user.getUsername(), jwtUtil.createToken(user))
+                new LoginResponse(user.getUsername(), jwtUtil.createToken(user), jwtUtil.tokenValidity())
         );
     }
 }
