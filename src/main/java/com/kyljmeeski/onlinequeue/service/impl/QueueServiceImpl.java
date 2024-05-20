@@ -54,7 +54,7 @@ public class QueueServiceImpl implements QueueService {
         Person person = new Person(name);
         person.joinQueue(queue);
         personRepository.save(person);
-        return new AddPersonToQueueResponse(queue.id(), person.name());
+        return new AddPersonToQueueResponse(queue.id(), queue.name(), queue.length(), person.name());
     }
 
     @Override
